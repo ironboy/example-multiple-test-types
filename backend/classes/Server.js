@@ -32,7 +32,7 @@ export default class Server {
       //'with settings', this.settings
     ));
     // Add language depedent REST-handling
-    app.use((req, _res, next) => {
+    this.app.use((req, _res, next) => {
       const match = req.url.match(/^\/api\/([a-z]{2})(\/.*)/);
       match && (req.lang = match[1]) && (req.url = '/api' + match[2]);
       req.lang = req.lang || 'en';
@@ -48,6 +48,10 @@ export default class Server {
   addStaticFolder() {
     const folder = PathFinder.relToAbs(this.settings.staticFolder);
     this.app.use(express.static(folder));
+    // SPA fallback - serve index.html for non-API routes
+    this.app.get('/{*path}', (_req, res) => {
+      res.sendFile(folder + '/index.html');
+    });
   }
 
 }
