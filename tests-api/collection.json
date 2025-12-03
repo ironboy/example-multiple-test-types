@@ -1,117 +1,292 @@
 {
-  "info": {
-    "name": "API Tests",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Get Products",
-      "request": {
-        "method": "GET",
-        "url": "http://localhost:5001/api/products"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Status code is 200', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test('Response is an array', function () {",
-              "    const jsonData = pm.response.json();",
-              "    pm.expect(jsonData).to.be.an('array');",
-              "});",
-              "",
-              "pm.test('Products have required fields', function () {",
-              "    const jsonData = pm.response.json();",
-              "    if (jsonData.length > 0) {",
-              "        pm.expect(jsonData[0]).to.have.property('id');",
-              "        pm.expect(jsonData[0]).to.have.property('name');",
-              "        pm.expect(jsonData[0]).to.have.property('price$');",
-              "    }",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Get Single Product",
-      "request": {
-        "method": "GET",
-        "url": "http://localhost:5001/api/products/1"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Status code is 200', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test('Product has id 1', function () {",
-              "    const jsonData = pm.response.json();",
-              "    pm.expect(jsonData.id).to.eql(1);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Get Exchange Rates",
-      "request": {
-        "method": "GET",
-        "url": "http://localhost:5001/api/exchange-rates"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Status code is 200', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test('Response has usd property', function () {",
-              "    const jsonData = pm.response.json();",
-              "    pm.expect(jsonData).to.have.property('usd');",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Get Empty Cart",
-      "request": {
-        "method": "GET",
-        "url": "http://localhost:5001/api/cart"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test('Status code is 200', function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test('Cart response is valid', function () {",
-              "    const jsonData = pm.response.json();",
-              "    pm.expect(jsonData).to.be.an('object');",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
-    }
-  ]
+	"info": {
+		"_postman_id": "e898165e-07a6-4fc9-b7a9-bc3c5da809b4",
+		"name": "API Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30881265"
+	},
+	"item": [
+		{
+			"name": "Get Products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const products = pm.response.json();",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Response is an array', function () {",
+							"    pm.expect(products).to.be.an('array');",
+							"});",
+							"",
+							"pm.test('Products have required fields', function () {",
+							"    for(let product of products){",
+							"        pm.expect(product).to.have.property('id');",
+							"        pm.expect(product).to.have.property('name');",
+							"        pm.expect(product).to.have.property('price$');",
+							"    }",
+							"});",
+							"",
+							"pm.test('All products have prices that are not below 0', function(){",
+							"  for(let product of products){",
+							"    pm.expect(product.price$).to.not.be.below(0);",
+							"  }",
+							"});",
+							"",
+							"pm.test('All products have prices below 1000', function(){",
+							"  for(let product of products){",
+							"    pm.expect(product.price$).to.be.below(1000);",
+							"  }",
+							"});",
+							"",
+							"// Add all products as a collection variable ",
+							"// that can be read from other request in the same collection",
+							"pm.collectionVariables.set('products', products);",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Single Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Always tricky to run timing test in GitHub Workflows etc. ",
+							"// because if there is a heavy on GitHub's servers",
+							"// the test might fail for no good reason",
+							"/*pm.test('Check that response time is below 1000ms', function(){",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+							"})*/",
+							"",
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Product has the correct id', function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.equal(pm.environment.get('id'));",
+							"});",
+							"",
+							"// Loop this request by removing one product from products ",
+							"// and continuing to call the request as long as we have products ",
+							"const products = pm.collectionVariables.get('products');",
+							"// remove first product in list",
+							"products.shift();",
+							"// write to collection variable again",
+							"pm.collectionVariables.set('products', products);",
+							"// if there are products left in list call this request again",
+							"if(products.length > 0){",
+							"    pm.execution.setNextRequest(\"Get Single Product\");",
+							"}",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Get all products from previous request (/api/products)",
+							"// by reading a collection variable set in that request",
+							"const products = pm.collectionVariables.get('products');",
+							"",
+							"// If we have products set the id of the first product",
+							"// as an environment varible (that we can access in the route using {{id}})",
+							"if(products.length > 0){",
+							"    pm.environment.set('id', products[0].id);",
+							"}",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/products/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"products",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Exchange Rates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Response has usd property', function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('usd');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/exchange-rates",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"exchange-rates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Empty Cart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 200', function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Cart response is valid', function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.an('object');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/cart",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"cart"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Not Allowed to Get Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code is 405', function () {",
+							"    pm.response.to.have.status(405);",
+							"});",
+							"",
+							"pm.test('Response has a property error with the value Not allowed.', function(){",
+							"    const data = pm.response.json();",
+							"    pm.expect(data?.error).to.equal('Not allowed.');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5001/api/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "products",
+			"value": ""
+		}
+	]
 }
