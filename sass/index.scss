@@ -1,0 +1,13 @@
+@use "flag-icons/css/flag-icons.min.css";
+@use 'bootstrap-icons/font/bootstrap-icons.css';
+@use 'bootstrap-breakpoints';
+@use 'bootstrap';
+@use 'card-colors';
+@use 'buttons';
+@use 'images';
+@use 'sticky-footer';
+@use 'shopping-cart';
+@use 'language-chooser';
+
+// Import fonts from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Chewy&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');

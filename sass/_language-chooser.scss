@@ -1,0 +1,33 @@
+$primary: rgb(14, 108, 21);
+
+.language-icon {
+  display: inline-block;
+  margin-top: -2px;
+  margin-right: 10px;
+
+  @media (min-width: 768px) {
+    font-size: 30px;
+    margin-right: 40px;
+
+    +span {
+      display: none
+    }
+  }
+}
+
+.language-dropdown {
+
+  @media (min-width: 768px) {
+    a::after {
+      display: none;
+    }
+  }
+
+  .dropdown-menu {
+    background-color: $primary;
+
+    .dropdown-item:hover {
+      background-color: rgba(0, 0, 0, 0.2)
+    }
+  }
+}
