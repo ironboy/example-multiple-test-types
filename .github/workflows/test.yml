@@ -42,14 +42,11 @@ jobs:
       - name: Build for API tests
         run: npm run build
 
-      - name: Start server
-        run: npm run backend &
-
-      - name: Wait for server
-        run: npx wait-on http://localhost:5001/api/products --timeout 30000
-
-      - name: API Tests (Newman)
-        run: npm run test:api
+      - name: Start server and run API tests
+        run: |
+          node backend/index.js standalone &
+          npx wait-on http://localhost:5001/api/products --timeout 30000
+          npm run test:api
 
       - uses: actions/upload-artifact@v4
         if: failure()
