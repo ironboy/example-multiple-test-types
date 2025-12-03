@@ -45,6 +45,8 @@ jobs:
       - name: Start server and run API tests
         run: |
           node backend/index.js standalone &
+          sleep 3
+          curl -v http://localhost:5001/api/products || true
           npx wait-on http://localhost:5001/api/products --timeout 30000
           npm run test:api
 
