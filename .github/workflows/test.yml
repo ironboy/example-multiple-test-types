@@ -33,22 +33,22 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
+      - name: Build
+        run: npm run build
+
       - name: Unit Tests (Vitest)
         run: npm run test:run
+
+      - name: Start server
+        run: |
+          node backend/index.js standalone &
+          sleep 3
 
       - name: E2E Tests (Playwright)
         run: npm run test:e2e
 
-      - name: Build for API tests
-        run: npm run build
-
-      - name: Start server and run API tests
-        run: |
-          node backend/index.js standalone &
-          sleep 3
-          curl -v http://localhost:5001/api/products || true
-          npx wait-on http://localhost:5001/api/products --timeout 30000
-          npm run test:api
+      - name: API Tests (Newman)
+        run: npm run test:api
 
       - uses: actions/upload-artifact@v4
         if: failure()

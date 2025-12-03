@@ -23,7 +23,7 @@ export default defineConfig({
   webServer: {
     command: useDev ? 'npm run dev' : 'npm run prod',
     url: useDev ? 'http://localhost:5173' : 'http://localhost:5001',
-    reuseExistingServer: !isCI,
+    reuseExistingServer: true,
     timeout: 120000,
   },
 });
