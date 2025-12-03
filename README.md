@@ -43,8 +43,8 @@ Ett enhetstest testar en enskild "enhet" av kod - typiskt en funktion eller en k
 
 | Testfil | Vad testas |
 |---------|------------|
-| `productPageHelpers.test.ts` | Funktionen `getHelpers()` som beräknar kategorier och sorteringsalternativ från en produktlista |
-| `Select.test.tsx` | React-komponenten `Select` - att den renderar label, options och anropar callback vid ändring |
+| `tests-unit/productPageHelpers.test.ts` | Funktionen `getHelpers()` som beräknar kategorier och sorteringsalternativ från en produktlista |
+| `tests-unit/Select.test.tsx` | React-komponenten `Select` - att den renderar label, options och anropar callback vid ändring |
 
 ```bash
 npm run test:run    # Kör en gång
@@ -98,7 +98,52 @@ npm run backend
 npm run test:api
 ```
 
-**Postman-import:** Filen `api-tests/collection.json` kan importeras i Postman (File → Import) för att köra testerna manuellt, inspektera API-svaren och lägga till fler tester.
+**Postman-import:** Filen `tests-api/collection.json` kan importeras i Postman (File → Import) för att köra testerna manuellt, inspektera API-svaren och lägga till fler tester.
+
+---
+
+## API-referens: Varukorgen
+
+För den som vill utöka API-testerna - så här fungerar varukorgs-API:et:
+
+### Lägg till/ändra vara i varukorgen
+
+```http
+POST /api/change-product-in-cart
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2,
+  "add": true
+}
+```
+
+| Fält | Beskrivning |
+|------|-------------|
+| `productId` | Produktens id (hämtas från `/api/products`) |
+| `quantity` | Antal att lägga till (eller sätta till) |
+| `add` | `true` = lägg till relativt, `false` = sätt absolut antal |
+
+**Exempel med curl:**
+```bash
+# Lägg till 2 st av produkt 1
+curl -X POST http://localhost:5001/api/change-product-in-cart \
+  -H "Content-Type: application/json" \
+  -d '{"productId": 1, "quantity": 2, "add": true}'
+```
+
+### Hämta varukorgen
+
+```http
+GET /api/cart
+```
+
+### Töm varukorgen
+
+```http
+DELETE /api/cart
+```
 
 ---
 
@@ -127,7 +172,6 @@ Vid misslyckade tester sparas Playwright-rapporten som en artifakt som kan ladda
 
 ```
 ├── src/                  # Frontend (React)
-│   ├── test/             # Enhetstester
 │   ├── pages/            # Sidkomponenter
 │   ├── parts/            # Återanvändbara komponenter
 │   └── utils/            # Hjälpfunktioner
@@ -135,8 +179,9 @@ Vid misslyckade tester sparas Playwright-rapporten som en artifakt som kan ladda
 │   ├── classes/          # Server och API-logik
 │   ├── databases/        # SQLite-databaser
 │   └── settings.json     # Konfiguration
-├── e2e/                  # E2E-tester (Playwright)
-├── api-tests/            # API-tester (Newman/Postman)
+├── tests-unit/           # Enhetstester (Vitest)
+├── tests-e2e/            # E2E-tester (Playwright)
+├── tests-api/            # API-tester (Newman/Postman)
 └── .github/workflows/    # CI/CD-pipeline
 ```
 
@@ -144,7 +189,7 @@ Vid misslyckade tester sparas Playwright-rapporten som en artifakt som kan ladda
 
 ## Lärandemål
 
-Efter att ha arbetat med detta projekt ska du kunna:
+Målet med detta exempel är att du när du har studerat det ska kunna:
 
 - Förklara skillnaden mellan enhets-, E2E- och API-tester
 - Skriva och köra enhetstester med Vitest

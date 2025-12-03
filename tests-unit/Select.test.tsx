@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Select from '../parts/Select';
+import Select from '../src/parts/Select';
 
 describe('Select component', () => {
   const defaultProps = {

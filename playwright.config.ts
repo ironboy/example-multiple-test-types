@@ -4,7 +4,7 @@ const isCI = !!process.env.CI;
 const useDev = !!process.env.DEV;
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './tests-e2e',
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,

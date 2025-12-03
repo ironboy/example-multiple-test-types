@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getHelpers } from '../utils/productPageHelpers';
+import { getHelpers } from '../src/utils/productPageHelpers';
 
 describe('getHelpers', () => {
   const mockProducts = [

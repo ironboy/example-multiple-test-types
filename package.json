@@ -19,7 +19,7 @@
     "test:e2e": "playwright test",
     "test:e2e:dev": "DEV=1 playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:api": "newman run api-tests/collection.json"
+    "test:api": "newman run tests-api/collection.json"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
