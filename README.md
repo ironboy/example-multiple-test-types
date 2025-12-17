@@ -21,7 +21,7 @@ npm install
 npm run dev
 
 # Eller bygg och kör produktionsversion
-npm run prod
+npm run prod 
 ```
 
 Öppna [http://localhost:5173](http://localhost:5173) (dev) eller [http://localhost:5001](http://localhost:5001) (prod).
