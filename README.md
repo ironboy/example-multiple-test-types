@@ -14,7 +14,7 @@ Detta är en liten webbshop byggd med:
 ## Komma igång
 
 ```bash
-# Installera beroenden
+# Installera beroenden 
 npm install
 
 # Starta utvecklingsserver
